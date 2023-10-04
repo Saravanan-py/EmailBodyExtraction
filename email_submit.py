@@ -145,7 +145,7 @@ def database(email_list):
                 record['business_unit_code']
             )
         )
-    print(values)
+   
     # Execute the SQL INSERT statement with executemany
     cursor.executemany(sql, values)
 
