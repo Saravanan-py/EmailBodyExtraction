@@ -27,35 +27,34 @@ def response_added(imapUserEmail, imapPassword):
         sub = msg['subject']
         import re
         for part in msg.walk():
-            if part.get_content_maintype() == 'multipart':
-                continue
-            if part.get_content_type() == "text/html":
-                html_content = part.get_payload(decode=True).decode(part.get_content_charset(), 'ignore')
-                plain_text_content = html2text.html2text(html_content)
-                if "Requisition ID" in plain_text_content:
-                    value = plain_text_content.split("Requisition ID")[1].strip('\n')
-                    value = value.split("---")[0].strip()
-                    id = value
-                if 'halted' in sub:
-                    status = 'halted'
-                if 'closed' in sub:
-                    status = 'closed'
-                if "Reason" in plain_text_content:
-                    value = plain_text_content.split("Reason")[1].strip('\n')
-                    value = value.strip().split('\n')[0].rstrip()
-                    comment = value
-                bool_value = "SELECT EXISTS(SELECT * FROM email WHERE clientjobid = %s)"
-                cursor.execute(bool_value, (id,))
-                result = cursor.fetchone()[0]
-                if result == 1:
-                    sql = "UPDATE email SET status = '{}' WHERE clientjobid= '{}'".format(status, id)
-                    cursor.execute(sql)
-                    sql1 = "UPDATE email SET comment = '{}' WHERE clientjobid= '{}'".format(comment, id)
-                    cursor.execute(sql1)
-                    conn.commit()
-                    print("Table Altered")
-                else:
-                    print("Data Unavailable")
+            if msg.is_multipart():
+                if part.get_content_type() == "text/html":
+                    html_content = part.get_payload(decode=True).decode(part.get_content_charset(), 'ignore')
+                    plain_text_content = html2text.html2text(html_content)
+                    if "Requisition ID" in plain_text_content:
+                        value = plain_text_content.split("Requisition ID")[1].strip('\n')
+                        value = value.split("---")[0].strip()
+                        id = value
+                    if 'halted' in sub:
+                        status = 'halted'
+                    if 'closed' in sub:
+                        status = 'closed'
+                    if "Reason" in plain_text_content:
+                        value = plain_text_content.split("Reason")[1].strip('\n')
+                        value = value.strip().split('\n')[0].rstrip()
+                        comment = value
+                    bool_value = "SELECT EXISTS(SELECT * FROM email WHERE clientjobid = %s)"
+                    cursor.execute(bool_value, (id,))
+                    result = cursor.fetchone()[0]
+                    if result == 1:
+                        sql = "UPDATE email SET status = '{}' WHERE clientjobid= '{}'".format(status, id)
+                        cursor.execute(sql)
+                        sql1 = "UPDATE email SET comment = '{}' WHERE clientjobid= '{}'".format(comment, id)
+                        cursor.execute(sql1)
+                        conn.commit()
+                        print("Table Altered")
+                    else:
+                        print("Data Unavailable")
 
 
 response_added(imapUserEmail='saravanan@vrdella.com', imapPassword='vwxz bznq xbgl xcsl')
