@@ -53,7 +53,10 @@ def response_added(imapUserEmail, imapPassword):
                     sql1 = "UPDATE email SET comment = '{}' WHERE clientjobid= '{}'".format(comment, id)
                     cursor.execute(sql1)
                     conn.commit()
+                    print("Table Altered")
+                else:
+                    print("Data Unavailable")
 
 
-re = response_added(imapUserEmail='saravanan@vrdella.com', imapPassword='vwxz bznq xbgl xcsl')
-print('Table Altered')
+response_added(imapUserEmail='saravanan@vrdella.com', imapPassword='vwxz bznq xbgl xcsl')
+
