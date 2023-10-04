@@ -142,9 +142,9 @@ for item in inbox_item_list:
                 b = datetime.now().date()
                 if 'halted' in sub:
                     status = 'halted'
-                if 'closed' in sub:
+                elif 'closed' in sub:
                     status = 'closed'
-                if start <= b and end >= b:
+                elif start <= b and end >= b:
                     status = 'Pending'
                 else:
                     status = 'Completed'
@@ -153,8 +153,8 @@ for item in inbox_item_list:
                 formated_result['client'] = 'Baxter'
 
                 sql = """
-                INSERT INTO email (clientjobid, job_title, location, job_start_date, job_end_date, business_unit, job_bill_rate, job_description, status, client, business_unit_code)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO email (clientjobid, job_title, location, job_start_date, job_end_date, business_unit, job_bill_rate, job_description, status, client, business_unit_code,comment)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
                 values = (
                     formated_result["clientjobid"],
@@ -167,7 +167,8 @@ for item in inbox_item_list:
                     formated_result.get("job_description", 0),
                     formated_result["status"],
                     formated_result["client"],
-                    formated_result.get('business_unit_code',0)
+                    formated_result.get('business_unit_code',0),
+                    formated_result.get("comment", 'no comment')
                 )
 
                 cursor.execute(sql, values)
