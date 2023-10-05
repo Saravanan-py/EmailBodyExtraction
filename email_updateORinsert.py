@@ -3,6 +3,7 @@ import imaplib as imp
 import email
 import html2text
 from datetime import datetime
+
 conn = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
@@ -12,11 +13,11 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 imapHostServer = 'imap.gmail.com'
 imapVar = imp.IMAP4_SSL(imapHostServer)
-imapUserEmail= 'saravanan@vrdella.com'
+imapUserEmail = 'saravanan@vrdella.com'
 imapPassword = 'vwxz bznq xbgl xcsl'
 imapVar.login(imapUserEmail, imapPassword)
 imapVar.select('Inbox')
-result, data = imapVar.uid('search', None, '(UNSEEN)')
+result, data = imapVar.uid('search', '(UNSEEN)')
 inbox_item_list = data[0].split()
 email_list = []
 
@@ -27,6 +28,7 @@ for item in inbox_item_list:
     sub = msg['subject']
     formated_result = {}
     import re
+
     for part in msg.walk():
         if msg.is_multipart():
             if part.get_content_type() == "text/html":
@@ -37,9 +39,9 @@ for item in inbox_item_list:
                     value = value.split("---")[0].strip()
                     id = value
                 bool_value = "SELECT EXISTS(SELECT * FROM email WHERE clientjobid = %s)"
-                cursor.execute(bool_value,(id,))
+                cursor.execute(bool_value, (id,))
                 result = cursor.fetchone()[0]
-                if result==1:
+                if result == 1:
                     sub = msg['subject']
                     if "Requisition ID" in plain_text_content:
                         value = plain_text_content.split("Requisition ID")[1].strip('\n')
@@ -53,15 +55,15 @@ for item in inbox_item_list:
                         value = plain_text_content.split("Reason")[1].strip('\n')
                         value = value.strip().split('\n')[0].rstrip()
                         comment = value
-                        if comment=='-':
+                        if comment == '-':
                             comment = "no comment"
-                        sql = "UPDATE email SET status = '{}' WHERE clientjobid= '{}'".format(status,id)
+                        sql = "UPDATE email SET status = '{}' WHERE clientjobid= '{}'".format(status, id)
                         cursor.execute(sql)
-                        sql1 = "UPDATE email SET comment = '{}' WHERE clientjobid= '{}'".format(comment,id)
+                        sql1 = "UPDATE email SET comment = '{}' WHERE clientjobid= '{}'".format(comment, id)
                         cursor.execute(sql1)
                         conn.commit()
-                elif result==0:
-                    sub=msg['subject']
+                elif result == 0:
+                    sub = msg['subject']
                     if "Requisition ID" in plain_text_content:
                         value = plain_text_content.split("Requisition ID")[1].strip('\n')
                         value = value.split("---")[0].strip()
@@ -141,7 +143,7 @@ for item in inbox_item_list:
 
                         formated_result['job_description'] = "\n".join(result)
                     else:
-                        result=[]
+                        result = []
                         if "Business Unit Code" in plain_text_content:
                             value = plain_text_content.split("Business Unit Code")[1].strip('\n')
                             value = value.strip().split('\n')[0].rstrip()
@@ -182,7 +184,7 @@ for item in inbox_item_list:
                         str(formated_result["job_start_date"]),
                         str(formated_result["job_end_date"]),
                         formated_result.get("business_unit", None),
-                        formated_result.get("job_bill_rate" , None),
+                        formated_result.get("job_bill_rate", None),
                         formated_result.get("job_description", None),
                         formated_result["status"],
                         formated_result["client"],
