@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1387e319-7299-458b-b67d-3c7d1c292277" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/email_submit.py" beforeDir="false" afterPath="$PROJECT_DIR$/email_submit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/response_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/response_update.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email_updateORinsert.py" beforeDir="false" afterPath="$PROJECT_DIR$/email_updateORinsert.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +53,15 @@
       <option name="project" value="LOCAL" />
       <updated>1696419014834</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="&quot;updated&quot;">
+      <option name="closed" value="true" />
+      <created>1696421064230</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1696421064230</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

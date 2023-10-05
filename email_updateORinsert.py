@@ -88,10 +88,13 @@ for item in inbox_item_list:
                         end = end.strip().split('\n')[0].rstrip()
                         end = datetime.strptime(end, "%Y-%m-%d").date()
                         formated_result["job_end_date"] = end
-                    if "Business Unit" in plain_text_content:
-                        value = plain_text_content.split("Business Unit")[1].strip('\n')
-                        value = value.strip().split('\n')[0].rstrip()
-                        formated_result["business_unit"] = value
+                    if 'Description' in plain_text_content:
+                        if "Business Unit" in plain_text_content:
+                            value = plain_text_content.split("Business Unit")[1].strip('\n')
+                            value = value.strip().split('\n')[0].rstrip()
+                            formated_result["business_unit"] = value
+                        else:
+                            formated_result['business_unit'] = None
                     if "Pay Rate:" in plain_text_content:
                         value = plain_text_content.split("Pay Rate:")[1].strip('\n')
                         value = value.strip().split('\n')[0].rstrip()
@@ -137,7 +140,24 @@ for item in inbox_item_list:
                             result.append("Coordinator: " + value)
 
                         formated_result['job_description'] = "\n".join(result)
+                    else:
+                        result=[]
+                        if "Business Unit Code" in plain_text_content:
+                            value = plain_text_content.split("Business Unit Code")[1].strip('\n')
+                            value = value.strip().split('\n')[0].rstrip()
+                            result.append("Business_unit_code: " + value)
 
+                        if "Site Code" in plain_text_content:
+                            value = plain_text_content.split("Site Code")[1].strip('\n')
+                            value = value.strip().split('\n')[0].rstrip()
+                            result.append("Site_code: " + value)
+
+                        if "Coordinator" in plain_text_content:
+                            value = plain_text_content.split("Coordinator")[1].strip('\n')
+                            value = value.strip().split('\n')[0].rstrip()
+                            result.append("Coordinator: " + value)
+
+                        formated_result['job_description'] = "\n".join(result)
                     b = datetime.now().date()
                     if 'halted' in sub:
                         status = 'halted'
@@ -152,8 +172,8 @@ for item in inbox_item_list:
                     formated_result['client'] = 'Baxter'
 
                     sql = """
-                    INSERT INTO email (clientjobid, job_title, location, job_start_date, job_end_date, business_unit, job_bill_rate, job_description, status, client, business_unit_code,comment)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO email (clientjobid, job_title, location, job_start_date, job_end_date, business_unit, job_bill_rate, job_description, status, client,comment)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
                     values = (
                         formated_result["clientjobid"],
@@ -161,13 +181,12 @@ for item in inbox_item_list:
                         formated_result["location"],
                         str(formated_result["job_start_date"]),
                         str(formated_result["job_end_date"]),
-                        formated_result.get("business_unit", 0),
-                        formated_result.get("job_bill_rate" , 0),
-                        formated_result.get("job_description", 0),
+                        formated_result.get("business_unit", None),
+                        formated_result.get("job_bill_rate" , None),
+                        formated_result.get("job_description", None),
                         formated_result["status"],
                         formated_result["client"],
-                        formated_result.get('business_unit_code',0),
-                        formated_result.get("comment", 'no comment')
+                        formated_result.get("comment", None)
                     )
 
                     cursor.execute(sql, values)
